@@ -176,9 +176,14 @@
                         $tahunInt = !empty($matches) ? (int)$matches[0] : (int)date('Y');
                         $isAktif = $tahunInt >= 2021;
 
-                        // Pecah kode (KP.05.12 menjadi KP.05) untuk menghindari Error 404
-                        $folderIndukArr = explode('.', $item->kode_arsip);
-                        $kodeFolderAsli = $folderIndukArr[0] . '.' . ($folderIndukArr[1] ?? '00');
+                        // PERBAIKAN BUG: Cek apakah kodenya LAINNYA (atau teks tanpa titik)
+                        if (strpos($item->kode_arsip, '.') === false) {
+                            $kodeFolderAsli = $item->kode_arsip; // Biarkan "LAINNYA" tetap "LAINNYA"
+                        } else {
+                            // Pecah kode (KP.05.12 menjadi KP.05) untuk menghindari Error 404
+                            $folderIndukArr = explode('.', $item->kode_arsip);
+                            $kodeFolderAsli = $folderIndukArr[0] . '.' . ($folderIndukArr[1] ?? '00');
+                        }
                     @endphp
 
                     <tr class="row-item" style="animation-delay: {{ $index * 0.08 }}s;">
